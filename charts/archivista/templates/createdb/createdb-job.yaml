@@ -16,7 +16,7 @@ spec:
 {{- end }}
   template:
     spec:
-      serviceAccountName: {{ template "archivista.serviceAccountName.logServer" . }}
+      serviceAccountName: {{ template "archivista.serviceAccountName.createdb" . }}
       restartPolicy: Never
       automountServiceAccountToken: {{ .Values.createdb.serviceAccount.mountToken }}
       containers:

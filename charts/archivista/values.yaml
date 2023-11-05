@@ -1,3 +1,7 @@
+namespace:
+  create: false
+  name: archivista-system
+
 replicaCount: 1
 
 image:
@@ -84,3 +88,85 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+mysql:
+  enabled: true
+  replicaCount: 1
+  name: mysql
+  hostname: ""
+  port: 3306
+  strategy:
+    type: Recreate
+  image:
+    registry: gcr.io
+    repository: trillian-opensource-ci/db_server
+    pullPolicy: IfNotPresent
+    # -- crane digest gcr.io/trillian-opensource-ci/db_server:v1.5.3
+    version: sha256:2a685a38dd0129cceb646c232d285383f614c7e6fa51ff8f512aef78e4298461
+  resources: {}
+  args:
+    - "--ignore-db-dir=lost+found"
+  service:
+    type: ClusterIP
+    ports:
+      - name: 3306-tcp
+        port: 3306
+        protocol: TCP
+        targetPort: 3306
+  livenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
+    exec:
+      command:
+        - /etc/init.d/mysql
+        - status
+  readinessProbe:
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+    successThreshold: 1
+    exec:
+      command:
+        - /etc/init.d/mysql
+        - status
+  secret:
+    annotations: {}
+  auth:
+    username: "mysql"
+    password: ""
+    rootPassword: ""
+    existingSecret: ""
+  persistence:
+    enabled: true
+    annotations: {}
+    storageClass: null
+    size: 5Gi
+    mountPath: /var/lib/mysql
+    subPath: ""
+    existingClaim: ""
+    accessModes:
+      - ReadWriteOnce
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+
+createdb:
+  enabled: true
+  dbname: archivista
+  ttlSecondsAfterFinished: 3600
+  name: createdb
+  image:
+    registry: ghcr.io
+    repository: sigstore/scaffolding/createdb
+    pullPolicy: IfNotPresent
+    # -- v0.6.9
+    version: sha256:b4a79c60c0dc9019e25d9b2d41d62c5fbd16be56d73df980b0ab3491a2bcb8c8
+  serviceAccount:
+    create: false
+    name: ""
+    annotations: {}

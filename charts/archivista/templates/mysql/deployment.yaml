@@ -48,48 +48,48 @@ spec:
             - name: MYSQL_DATABASE
               value: {{ template "mysql.database" . }}
           ports:
-            {{- include "archivista.containerPorts" .Values.mysql.service.ports | indent 12 }}
+{{ toYaml .Values.mysql.service.ports | indent 12 }}
           {{- if .Values.mysql.livenessProbe }}
           livenessProbe:
-            {{ toYaml .Values.mysql.livenessProbe | indent 12 }}
+{{ toYaml .Values.mysql.livenessProbe | indent 12 }}
           {{- end }}
           {{- if .Values.mysql.readinessProbe }}
           readinessProbe:
-            {{ toYaml .Values.mysql.readinessProbe | indent 12 }}
+{{ toYaml .Values.mysql.readinessProbe | indent 12 }}
           {{- end }}
           resources:
-            {{ toYaml .Values.mysql.resources | indent 12 }}
+{{ toYaml .Values.mysql.resources | indent 12 }}
           volumeMounts:
             - name: storage
               mountPath: {{ .Values.mysql.persistence.mountPath }}
               subPath: {{ .Values.mysql.persistence.subPath }}
           {{- if .Values.mysql.containerSecurityContext }}
           securityContext:
-            {{ toYaml .Values.mysql.containerSecurityContext | indent 12 }}
+{{ toYaml .Values.mysql.containerSecurityContext | indent 12 }}
           {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{ toYaml .Values.imagePullSecrets | indent 8 }}
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
       {{- if .Values.mysql.nodeSelector }}
       nodeSelector:
-        {{ toYaml .Values.mysql.nodeSelector | indent 8 }}
+{{ toYaml .Values.mysql.nodeSelector | indent 8 }}
       {{- end }}
       {{- with .Values.mysql.dnsConfig }}
       dnsConfig:
-        {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
       {{- if .Values.mysql.securityContext }}
       securityContext:
-        {{ toYaml .Values.mysql.securityContext | indent 8 }}
+{{ toYaml .Values.mysql.securityContext | indent 8 }}
       {{- end }}
       {{- if .Values.mysql.tolerations }}
       tolerations:
-        {{ toYaml .Values.mysql.tolerations | indent 8 }}
+{{ toYaml .Values.mysql.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.mysql.affinity }}
       affinity:
-        {{ toYaml .Values.mysql.affinity | indent 8 }}
+{{ toYaml .Values.mysql.affinity | indent 8 }}
       {{- end }}
       volumes:
       {{- if not .Values.mysql.persistence.enabled }}
