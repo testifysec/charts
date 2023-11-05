@@ -81,11 +81,22 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "archivista.mysql.labels" -}}
 {{ include "archivista.labels" . }}
+{{ include "archivista.mysql.matchLabels" . }}
 {{- end -}}
 
 {{- define "archivista.mysql.matchLabels" -}}
 app.kubernetes.io/component: {{ .Values.mysql.name | quote }}
 {{ include "archivista.selectorLabels" . }}
+{{- end -}}
+
+{{/*
+Create Container Ports based on Service Ports
+*/}}
+{{- define "archivista.containerPorts" -}}
+{{- range . }}
+- containerPort: {{ (ternary .port .targetPort (empty .targetPort)) | int }}
+  protocol: {{ default "TCP" .protocol }}
+{{- end -}}
 {{- end -}}
 
 {{/*

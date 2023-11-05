@@ -33,22 +33,22 @@ spec:
 {{ toYaml .Values.mysql.args | indent 12 }}
           {{- end }}
           env:
-            - name: MYSQL_ROOT_PASSWORD
+            - name: MARIADB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "mysql.secretName" . }}
                   key: mysql-root-password
-            - name: MYSQL_USER
+            - name: MARIADB_USER
               value: {{ .Values.mysql.auth.username | quote }}
-            - name: MYSQL_PASSWORD
+            - name: MARIADB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "mysql.secretName" . }}
                   key: mysql-password
-            - name: MYSQL_DATABASE
+            - name: MARIADB_DATABASE
               value: {{ template "mysql.database" . }}
           ports:
-{{ toYaml .Values.mysql.service.ports | indent 12 }}
+{{- include "archivista.containerPorts" .Values.mysql.service.ports | indent 12 }}
           {{- if .Values.mysql.livenessProbe }}
           livenessProbe:
 {{ toYaml .Values.mysql.livenessProbe | indent 12 }}

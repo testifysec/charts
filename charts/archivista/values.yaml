@@ -36,7 +36,7 @@ securityContext: {}
 deployment:
   env: 
     - name: ARCHIVISTA_SQL_STORE_CONNECTION_STRING
-      value: "user:pass@tcp(localhost:3306)/archivista"
+      value: "user:pass@tcp(archivista-mysql.default.svc.cluster.local:3306)/archivista"
   # - name: ARCHIVISTA_STORAGE_BACKEND
   #   value: "BLOB"
   # - name: ARCHIVISTA_BLOB_STORE_ENDPOINT
@@ -98,11 +98,11 @@ mysql:
   strategy:
     type: Recreate
   image:
-    registry: gcr.io
-    repository: trillian-opensource-ci/db_server
+    registry: cgr.dev
+    repository: chainguard/mariadb
     pullPolicy: IfNotPresent
-    # -- crane digest gcr.io/trillian-opensource-ci/db_server:v1.5.3
-    version: sha256:2a685a38dd0129cceb646c232d285383f614c7e6fa51ff8f512aef78e4298461
+    # -- crane digest cgr.dev/chainguard/mariadb:latest
+    version: sha256:13be60cfcc92a72a2ea9c78a8098e13853466768075d6fe9040060fe387cdb5b
   resources: {}
   args:
     - "--ignore-db-dir=lost+found"
@@ -121,8 +121,9 @@ mysql:
     successThreshold: 1
     exec:
       command:
-        - /etc/init.d/mysql
-        - status
+        - bash
+        - -c
+        - mysqladmin -u $MARIADB_USER -p$MARIADB_PASSWORD ping
   readinessProbe:
     initialDelaySeconds: 10
     periodSeconds: 10
@@ -131,8 +132,9 @@ mysql:
     successThreshold: 1
     exec:
       command:
-        - /etc/init.d/mysql
-        - status
+        - bash
+        - -c
+        - mysql -u $MARIADB_USER -p$MARIADB_PASSWORD -e "SELECT 1"
   secret:
     annotations: {}
   database: archivista
@@ -157,7 +159,7 @@ mysql:
     annotations: {}
 
 createdb:
-  enabled: true
+  enabled: false
   dbname: archivista
   ttlSecondsAfterFinished: 3600
   name: createdb
