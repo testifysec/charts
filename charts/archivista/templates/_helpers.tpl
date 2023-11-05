@@ -80,7 +80,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "archivista.mysql.labels" -}}
-{{ include "archivista.mysql.matchLabels" . }}
 {{ include "archivista.labels" . }}
 {{- end -}}
 

@@ -34,9 +34,9 @@ securityContext: {}
   # runAsUser: 1000
 
 deployment:
-  env: []
-  # - name: ARCHIVISTA_SQL_STORE_CONNECTION_STRING
-  #   value: "user:pass@tcp(localhost:3306)/testify"
+  env: 
+    - name: ARCHIVISTA_SQL_STORE_CONNECTION_STRING
+      value: "user:pass@tcp(localhost:3306)/archivista"
   # - name: ARCHIVISTA_STORAGE_BACKEND
   #   value: "BLOB"
   # - name: ARCHIVISTA_BLOB_STORE_ENDPOINT
@@ -135,9 +135,10 @@ mysql:
         - status
   secret:
     annotations: {}
+  database: archivista
   auth:
-    username: "mysql"
-    password: ""
+    username: "user"
+    password: "pass"
     rootPassword: ""
     existingSecret: ""
   persistence:

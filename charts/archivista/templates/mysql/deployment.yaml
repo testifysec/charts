@@ -2,24 +2,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "archivista.fullname" . }}-db
+  name: {{ template "archivista.mysql.fullname" . }}
 spec:
   selector:
     matchLabels:
-      {{- include "archivista.mysql.matchLabels" . | nindent 6 }}
+{{- include "archivista.mysql.matchLabels" . | nindent 6 }}
   template:
     metadata:
       {{- if .Values.mysql.podAnnotations }}
       annotations:
-        {{ toYaml .Values.mysql.podAnnotations | nindent 8 }}
+{{ toYaml .Values.mysql.podAnnotations | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "archivista.mysql.labels" . | nindent 8 }}
+{{- include "archivista.mysql.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "archivista.serviceAccountName.mysql" . }}
       {{- if .Values.mysql.extraInitContainers }}
       initContainers:
-        {{ toYaml .Values.mysql.extraInitContainers | indent 8 }}
+{{ toYaml .Values.mysql.extraInitContainers | indent 8 }}
       {{- end }}
       {{- if .Values.mysql.priorityClassName }}
       priorityClassName: "{{ .Values.mysql.priorityClassName }}"
@@ -30,7 +30,7 @@ spec:
           imagePullPolicy: "{{ .Values.mysql.image.pullPolicy }}"
           {{- if .Values.mysql.args }}
           args:
-          {{ toYaml .Values.mysql.args | indent 12 }}
+{{ toYaml .Values.mysql.args | indent 12 }}
           {{- end }}
           env:
             - name: MYSQL_ROOT_PASSWORD
